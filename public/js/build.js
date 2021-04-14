@@ -35,8 +35,43 @@ class Display {
 	constructor() {
 		console.log("Create a new display");
 		this.screen = document.querySelector("canvas");
-		this.screen.width = _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_WIDTH;
-		this.screen.height = _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_HEIGHT;
+		this.screen.width = _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_WIDTH * _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_MULTIPLY;
+		this.screen.height = _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_HEIGHT * _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_MULTIPLY;
+		this.context = this.screen.getContext("2d");
+		this.context.fill = _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.BG_COLOR;
+		this.frameBuffer = [];
+		this.reset();
+	}
+	reset() {
+		for (let i = 0; i < _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_HEIGHT; i++) {
+			this.frameBuffer.push([]);
+			for (let j = 0; j < _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_WIDTH; j++) {
+				this.frameBuffer[i].push(1);
+			}
+		}
+		this.context.fillRect(0, 0, this.screen.width, this.screen.height);
+		this.drawBuffer();
+	}
+	drawBuffer() {
+		for (let i = 0; i < _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_HEIGHT; i++) {
+			this.frameBuffer.push([]);
+			for (let j = 0; j < _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_WIDTH; j++) {
+				this.drawPixel(i, j, this.frameBuffer[i][j]);
+			}
+		}
+	}
+	drawPixel(h, w, value) {
+		if (value) {
+			this.context.fillStyle = _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.COLOR;
+		} else {
+			this.context.fillStyle = _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.BG_COLOR;
+		}
+		this.context.fillRect(
+			w * _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_MULTIPLY,
+			h * _constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_MULTIPLY,
+			_constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_MULTIPLY,
+			_constants_displayConstants__WEBPACK_IMPORTED_MODULE_0__.DISPLAY_MULTIPLY
+		);
 	}
 }
 
@@ -48,10 +83,16 @@ class Display {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DISPLAY_WIDTH": () => (/* binding */ DISPLAY_WIDTH),
-/* harmony export */   "DISPLAY_HEIGHT": () => (/* binding */ DISPLAY_HEIGHT)
+/* harmony export */   "DISPLAY_HEIGHT": () => (/* binding */ DISPLAY_HEIGHT),
+/* harmony export */   "DISPLAY_MULTIPLY": () => (/* binding */ DISPLAY_MULTIPLY),
+/* harmony export */   "BG_COLOR": () => (/* binding */ BG_COLOR),
+/* harmony export */   "COLOR": () => (/* binding */ COLOR)
 /* harmony export */ });
 const DISPLAY_WIDTH = 64;
 const DISPLAY_HEIGHT = 32;
+const DISPLAY_MULTIPLY = 10;
+const BG_COLOR = "#000";
+const COLOR = "#3F6";
 
 
 /***/ })
