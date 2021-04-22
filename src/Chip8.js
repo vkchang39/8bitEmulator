@@ -1,3 +1,5 @@
+import { CHAR_SET } from "./constants/charSetConstants";
+import { CHAR_SET_ADDRESS } from "./constants/memoryConstants";
 import { Display } from "./Display";
 import { Keyboard } from "./Keyboard";
 import { Memory } from "./Memory";
@@ -10,8 +12,12 @@ export class Chip8 {
 		this.memory = new Memory();
 		this.registors = new Registers();
 		this.keyboard = new Keyboard();
+		this.loadCharSet();
 	}
-	sleep(ms = 500) {
+	sleep(ms = 1000) {
 		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+	loadCharSet() {
+		this.memory.memory.set(CHAR_SET, CHAR_SET_ADDRESS);
 	}
 }

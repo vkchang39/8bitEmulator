@@ -9,10 +9,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Chip8": () => (/* binding */ Chip8)
 /* harmony export */ });
-/* harmony import */ var _Display__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var _Keyboard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8);
-/* harmony import */ var _Memory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
-/* harmony import */ var _Registers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
+/* harmony import */ var _constants_charSetConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
+/* harmony import */ var _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
+/* harmony import */ var _Display__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
+/* harmony import */ var _Keyboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+/* harmony import */ var _Memory__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
+/* harmony import */ var _Registers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
+
+
 
 
 
@@ -21,13 +25,17 @@ __webpack_require__.r(__webpack_exports__);
 class Chip8 {
 	constructor() {
 		console.log("Create a new emulator");
-		this.display = new _Display__WEBPACK_IMPORTED_MODULE_0__.Display();
-		this.memory = new _Memory__WEBPACK_IMPORTED_MODULE_2__.Memory();
-		this.registors = new _Registers__WEBPACK_IMPORTED_MODULE_3__.Registers();
-		this.keyboard = new _Keyboard__WEBPACK_IMPORTED_MODULE_1__.Keyboard();
+		this.display = new _Display__WEBPACK_IMPORTED_MODULE_2__.Display();
+		this.memory = new _Memory__WEBPACK_IMPORTED_MODULE_4__.Memory();
+		this.registors = new _Registers__WEBPACK_IMPORTED_MODULE_5__.Registers();
+		this.keyboard = new _Keyboard__WEBPACK_IMPORTED_MODULE_3__.Keyboard();
+		this.loadCharSet();
 	}
-	sleep(ms = 500) {
+	sleep(ms = 1000) {
 		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
+	loadCharSet() {
+		this.memory.memory.set(_constants_charSetConstants__WEBPACK_IMPORTED_MODULE_0__.CHAR_SET, _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_1__.CHAR_SET_ADDRESS);
 	}
 }
 
@@ -113,9 +121,80 @@ const COLOR = "#3F6";
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Keyboard": () => (/* binding */ Keyboard)
+/* harmony export */ });
+/* harmony import */ var _constants_keyboardConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
+
+
+class Keyboard {
+	constructor() {
+		this.keys = new Array(_constants_keyboardConstants__WEBPACK_IMPORTED_MODULE_0__.NUMBER_OF_KEYS).fill(false);
+		document.addEventListener("keydown", (e) => this.keydown(e));
+		document.addEventListener("keyup", (e) => this.keyup(e));
+	}
+
+	keydown(key) {
+		const keyIndex = _constants_keyboardConstants__WEBPACK_IMPORTED_MODULE_0__.keyMap.findIndex((mapKey) => mapKey === key.toLowerCase());
+		if (keyIndex > -1) {
+			this.keys[keyIndex] = true;
+		}
+	}
+	keyup(key) {
+		const keyIndex = _constants_keyboardConstants__WEBPACK_IMPORTED_MODULE_0__.keyMap.findIndex((mapKey) => mapKey === key.toLowerCase());
+		if (keyIndex > -1) {
+			this.keys[keyIndex] = false;
+		}
+	}
+
+	isKeydown(keyIndex) {
+		return this.keys[keyIndex];
+	}
+
+	hadKeydown(keyIndex) {
+		return this.keys.findIndex((key) => key) != -1;
+	}
+}
+
+
+/***/ }),
+/* 5 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "NUMBER_OF_KEYS": () => (/* binding */ NUMBER_OF_KEYS),
+/* harmony export */   "keyMap": () => (/* binding */ keyMap)
+/* harmony export */ });
+const NUMBER_OF_KEYS = 16;
+const keyMap = [
+	"1",
+	"2",
+	"3",
+	"q",
+	"w",
+	"e",
+	"a",
+	"s",
+	"d",
+	"x",
+	"z",
+	"c",
+	"4",
+	"r",
+	"f",
+	"v",
+];
+
+
+/***/ }),
+/* 6 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Memory": () => (/* binding */ Memory)
 /* harmony export */ });
-/* harmony import */ var _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
+/* harmony import */ var _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7);
 
 
 class Memory {
@@ -144,28 +223,30 @@ class Memory {
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "MEMORY_SIZE": () => (/* binding */ MEMORY_SIZE),
-/* harmony export */   "LOAD_PROGRAM_ADDRESS": () => (/* binding */ LOAD_PROGRAM_ADDRESS)
+/* harmony export */   "LOAD_PROGRAM_ADDRESS": () => (/* binding */ LOAD_PROGRAM_ADDRESS),
+/* harmony export */   "CHAR_SET_ADDRESS": () => (/* binding */ CHAR_SET_ADDRESS)
 /* harmony export */ });
 const MEMORY_SIZE = 4095;
 const LOAD_PROGRAM_ADDRESS = 0x200;
+const CHAR_SET_ADDRESS = 0x000;
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Registers": () => (/* binding */ Registers)
 /* harmony export */ });
-/* harmony import */ var _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
-/* harmony import */ var _constants_registersConstants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
+/* harmony import */ var _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7);
+/* harmony import */ var _constants_registersConstants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 
 
 
@@ -213,7 +294,7 @@ class Registers {
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -226,73 +307,94 @@ const STACK_DEEP = 16;
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Keyboard": () => (/* binding */ Keyboard)
+/* harmony export */   "CHAR_SET": () => (/* binding */ CHAR_SET)
 /* harmony export */ });
-/* harmony import */ var _constants_keyboardConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9);
-
-
-class Keyboard {
-	constructor() {
-		this.keys = new Array(_constants_keyboardConstants__WEBPACK_IMPORTED_MODULE_0__.NUMBER_OF_KEYS).fill(false);
-		document.addEventListener("keydown", (e) => this.keydown(e));
-		document.addEventListener("keyup", (e) => this.keyup(e));
-	}
-
-	keydown(key) {
-		const keyIndex = _constants_keyboardConstants__WEBPACK_IMPORTED_MODULE_0__.keyMap.findIndex((mapKey) => mapKey === key.toLowerCase());
-		if (keyIndex > -1) {
-			this.keys[keyIndex] = true;
-		}
-	}
-	keyup(key) {
-		const keyIndex = _constants_keyboardConstants__WEBPACK_IMPORTED_MODULE_0__.keyMap.findIndex((mapKey) => mapKey === key.toLowerCase());
-		if (keyIndex > -1) {
-			this.keys[keyIndex] = false;
-		}
-	}
-
-	isKeydown(keyIndex) {
-		return this.keys[keyIndex];
-	}
-
-	hadKeydown(keyIndex) {
-		return this.keys.findIndex((key) => key) != -1;
-	}
-}
-
-
-/***/ }),
-/* 9 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "NUMBER_OF_KEYS": () => (/* binding */ NUMBER_OF_KEYS),
-/* harmony export */   "keyMap": () => (/* binding */ keyMap)
-/* harmony export */ });
-const NUMBER_OF_KEYS = 16;
-const keyMap = [
-	"1",
-	"2",
-	"3",
-	"q",
-	"w",
-	"e",
-	"a",
-	"s",
-	"d",
-	"x",
-	"z",
-	"c",
-	"4",
-	"r",
-	"f",
-	"v",
+const CHAR_SET = [
+	0xf0,
+	0x90,
+	0x90,
+	0x90,
+	0xf0,
+	0x20,
+	0x60,
+	0x20,
+	0x20,
+	0x70,
+	0xf0,
+	0x10,
+	0xf0,
+	0x80,
+	0xf0,
+	0xf0,
+	0x10,
+	0xf0,
+	0x10,
+	0xf0,
+	0x90,
+	0x90,
+	0xf0,
+	0x10,
+	0x10,
+	0xf0,
+	0x80,
+	0xf0,
+	0x10,
+	0xf0,
+	0xf0,
+	0x80,
+	0xf0,
+	0x90,
+	0xf0,
+	0xf0,
+	0x10,
+	0x20,
+	0x40,
+	0x40,
+	0xf0,
+	0x90,
+	0xf0,
+	0x90,
+	0xf0,
+	0xf0,
+	0x90,
+	0xf0,
+	0x10,
+	0xf0,
+	0xf0,
+	0x90,
+	0xf0,
+	0x90,
+	0x90,
+	0xe0,
+	0x90,
+	0xe0,
+	0x90,
+	0xe0,
+	0xf0,
+	0x80,
+	0x80,
+	0x80,
+	0xf0,
+	0xe0,
+	0x90,
+	0x90,
+	0x90,
+	0xe0,
+	0xf0,
+	0x80,
+	0xf0,
+	0x80,
+	0xf0,
+	0xf0,
+	0x80,
+	0xf0,
+	0x80,
+	0x80,
 ];
 
 
