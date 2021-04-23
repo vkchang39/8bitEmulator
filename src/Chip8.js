@@ -1,5 +1,6 @@
 import { CHAR_SET } from "./constants/charSetConstants";
 import { CHAR_SET_ADDRESS } from "./constants/memoryConstants";
+import { TIMER_60_HZ } from "./constants/registersConstants";
 import { Display } from "./Display";
 import { Keyboard } from "./Keyboard";
 import { Memory } from "./Memory";
@@ -15,7 +16,7 @@ export class Chip8 {
 		this.keyboard = new Keyboard();
 		this.display = new Display(this.memory);
 	}
-	sleep(ms = 1000) {
+	sleep(ms = TIMER_60_HZ) {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 	loadCharSet() {

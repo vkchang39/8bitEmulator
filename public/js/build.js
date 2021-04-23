@@ -11,10 +11,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _constants_charSetConstants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _Display__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
-/* harmony import */ var _Keyboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
-/* harmony import */ var _Memory__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
-/* harmony import */ var _Registers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9);
+/* harmony import */ var _constants_registersConstants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
+/* harmony import */ var _Display__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+/* harmony import */ var _Keyboard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
+/* harmony import */ var _Memory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
+/* harmony import */ var _Registers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9);
+
 
 
 
@@ -25,14 +27,14 @@ __webpack_require__.r(__webpack_exports__);
 class Chip8 {
 	constructor() {
 		console.log("Create a new emulator");
-		this.memory = new _Memory__WEBPACK_IMPORTED_MODULE_4__.Memory();
+		this.memory = new _Memory__WEBPACK_IMPORTED_MODULE_5__.Memory();
 		this.loadCharSet();
 
-		this.registors = new _Registers__WEBPACK_IMPORTED_MODULE_5__.Registers();
-		this.keyboard = new _Keyboard__WEBPACK_IMPORTED_MODULE_3__.Keyboard();
-		this.display = new _Display__WEBPACK_IMPORTED_MODULE_2__.Display(this.memory);
+		this.registors = new _Registers__WEBPACK_IMPORTED_MODULE_6__.Registers();
+		this.keyboard = new _Keyboard__WEBPACK_IMPORTED_MODULE_4__.Keyboard();
+		this.display = new _Display__WEBPACK_IMPORTED_MODULE_3__.Display(this.memory);
 	}
-	sleep(ms = 1000) {
+	sleep(ms = _constants_registersConstants__WEBPACK_IMPORTED_MODULE_2__.TIMER_60_HZ) {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 	loadCharSet() {
@@ -363,8 +365,8 @@ class Registers {
 	constructor() {
 		this.V = new Uint8Array(_constants_registersConstants__WEBPACK_IMPORTED_MODULE_1__.NUMBER_OF_REGISTERS);
 		this.I = 0;
-		this.delayTimer = 0;
-		this.soundTimer = 0;
+		this.DT = 0;
+		this.ST = 0;
 		this.PC = _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_0__.LOAD_PROGRAM_ADDRESS;
 		this.SP = -1;
 		this.stack = new Uint16Array(_constants_registersConstants__WEBPACK_IMPORTED_MODULE_1__.STACK_DEEP);
@@ -373,8 +375,8 @@ class Registers {
 	reset() {
 		this.V.fill(0);
 		this.I = 0;
-		this.delayTimer = 0;
-		this.soundTimer = 0;
+		this.DT = 0;
+		this.ST = 0;
 		this.PC = _constants_memoryConstants__WEBPACK_IMPORTED_MODULE_0__.LOAD_PROGRAM_ADDRESS;
 		this.SP = -1;
 		this.stack.fill(0);
@@ -409,10 +411,12 @@ class Registers {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "NUMBER_OF_REGISTERS": () => (/* binding */ NUMBER_OF_REGISTERS),
-/* harmony export */   "STACK_DEEP": () => (/* binding */ STACK_DEEP)
+/* harmony export */   "STACK_DEEP": () => (/* binding */ STACK_DEEP),
+/* harmony export */   "TIMER_60_HZ": () => (/* binding */ TIMER_60_HZ)
 /* harmony export */ });
 const NUMBER_OF_REGISTERS = 16;
 const STACK_DEEP = 16;
+const TIMER_60_HZ = 1000 / 60;
 
 
 /***/ })
@@ -482,7 +486,13 @@ __webpack_require__.r(__webpack_exports__);
 const chip8 = new _Chip8__WEBPACK_IMPORTED_MODULE_0__.Chip8();
 
 async function runChip8() {
-	chip8.display.drawSprite(10, 1, 15, 5);
+	while (1) {
+		await chip8.sleep(1000);
+		if (chip8.registors.DT > 0) {
+			await chip8.sleep();
+			chip8.registors.DT--;
+		}
+	}
 }
 
 runChip8();
